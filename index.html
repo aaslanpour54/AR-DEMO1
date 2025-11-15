@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebAR Marker Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- A-Frame و MindAR از CDN -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        color: #fff;
+        font-family: sans-serif;
+      }
+      #info {
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+        background: #222;
+      }
+      #info img {
+        max-width: 260px;
+        width: 70%;
+        height: auto;
+        margin-top: 8px;
+        border-radius: 8px;
+        background: #fff;
+      }
+      #scene-wrapper {
+        width: 100vw;
+        height: calc(100vh - 140px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- پیش‌نمایش مارکر (همین عکسی که باید اسکن بشه) -->
+    <div id="info">
+      <div>این تصویر <code>marker.png</code> است. آن را چاپ کن یا روی یک مانیتور نشان بده.</div>
+      <div>حالا این صفحه را روی <b>گوشی</b> باز کن تا با دوربین، همین تصویر را اسکن کند.</div>
+      <img src="./marker.png" alt="Marker Image" />
+    </div>
+
+    <div id="scene-wrapper">
+      <!-- صحنه WebAR -->
+      <a-scene
+        embedded
+        mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
+        renderer="colorManagement: true, physicallyCorrectLights"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+      >
+        <!-- تکسچر کاراکتر -->
+        <a-assets>
+          <img id="charTexture" src="./marker.png" />
+        </a-assets>
+
+        <!-- دوربین AR (روی موبایل به‌طور خودکار از دوربین پشتی استفاده می‌کند) -->
+        <a-camera look-controls="enabled: false"></a-camera>
+
+        <!-- نور -->
+        <a-entity light="type: directional; intensity: 1" position="0 1 1"></a-entity>
+        <a-entity light="type: ambient; intensity: 0.5"></a-entity>
+
+        <!-- وقتی marker.png شناسایی شد، این آبجکت روی آن ظاهر می‌شود -->
+        <a-entity mindar-image-target="targetIndex: 0">
+          <!-- یک مکعب سه‌بعدی با تکسچر کاراکترت، در حال چرخش و بالا پایین رفتن -->
+          <a-box
+            material="src: #charTexture"
+            width="1"
+            height="1"
+            depth="0.3"
+            position="0 0.5 0"
+            animation__bounce="property: position; to: 0 0.9 0; dur: 600; dir: alternate; loop: true; easing: easeInOutSine"
+            animation__spin="property: rotation; to: 0 360 0; dur: 4000; loop: true; easing: linear"
+          ></a-box>
+        </a-entity>
+      </a-scene>
+    </div>
+  </body>
+</html>
